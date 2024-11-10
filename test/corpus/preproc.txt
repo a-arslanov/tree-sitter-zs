@@ -1,0 +1,471 @@
+================================================================================
+Preproc 1
+================================================================================
+
+#include "some/path.h"
+#include <stdint.h>
+#include MACRO
+#include MACRO(arg1, arg2)
+
+--------------------------------------------------------------------------------
+
+(program
+  (preproc_include
+    path: (string_literal
+      (string_fragment)))
+  (preproc_include
+    path: (system_lib_string))
+  (preproc_include
+    path: (identifier))
+  (preproc_include
+    path: (call_expression
+      function: (identifier)
+      arguments: (argument_list
+        (identifier)
+        (identifier)))))
+
+================================================================================
+Preproc 2
+================================================================================
+
+#define ONE
+    #define TWO int a = b;
+#define THREE c == d ? e : f
+#define FOUR (mno * pq)
+#define EIGHT(x) do { \
+        x = x + 1;  \
+        x = x / 2;  \
+    } while (x > 0);
+
+--------------------------------------------------------------------------------
+
+(program
+  (preproc_def
+    (identifier))
+  (preproc_def
+    (identifier)
+    (preproc_arg))
+  (preproc_def
+    (identifier)
+    (preproc_arg))
+  (preproc_def
+    (identifier)
+    (preproc_arg))
+  (preproc_function_def
+    (identifier)
+    (preproc_params
+      (identifier))
+    (preproc_arg)))
+
+================================================================================
+Preproc 3
+================================================================================
+
+#define ONE() a
+#define TWO(b) c
+#define THREE(d, e) f
+#define FOUR(...) g
+#define FIVE(h, i, ...) j
+
+--------------------------------------------------------------------------------
+
+(program
+  (preproc_function_def
+    (identifier)
+    (preproc_params)
+    (preproc_arg))
+  (preproc_function_def
+    (identifier)
+    (preproc_params
+      (identifier))
+    (preproc_arg))
+  (preproc_function_def
+    (identifier)
+    (preproc_params
+      (identifier)
+      (identifier))
+    (preproc_arg))
+  (preproc_function_def
+    (identifier)
+    (preproc_params)
+    (preproc_arg))
+  (preproc_function_def
+    (identifier)
+    (preproc_params
+      (identifier)
+      (identifier))
+    (preproc_arg)))
+
+================================================================================
+Preproc 4
+================================================================================
+
+#ifndef DEFINE1
+int j;
+#endif
+
+#ifdef DEFINE2
+int j;
+#define c 32
+#elif defined DEFINE3
+#else
+int b;
+#define c 16
+#endif
+
+#ifdef DEFINE2
+#else
+#  ifdef DEFINE3
+#  else
+#  endif
+#endif
+
+#if DEFINE1
+int j;
+#endif
+
+--------------------------------------------------------------------------------
+
+(program
+  (preproc_ifndef
+    (identifier)
+    (local_variable_declaration
+      (integral_type)
+      (variable_declarator
+        (identifier))))
+  (preproc_ifdef
+    (identifier)
+    (local_variable_declaration
+      (integral_type)
+      (variable_declarator
+        (identifier)))
+    (preproc_def
+      (identifier)
+      (preproc_arg))
+    (preproc_elif
+      (preproc_defined
+        (identifier))
+      (preproc_else
+        (local_variable_declaration
+          (integral_type)
+          (variable_declarator
+            (identifier)))
+        (preproc_def
+          (identifier)
+          (preproc_arg)))))
+  (preproc_ifdef
+    (identifier)
+    (preproc_else
+      (preproc_ifdef
+        (identifier)
+        (preproc_else))))
+  (preproc_if
+    (identifier)
+    (local_variable_declaration
+      (integral_type)
+      (variable_declarator
+        (identifier)))))
+
+================================================================================
+Preproc 5
+================================================================================
+
+#ifndef A
+#define A
+class X {
+  D a() {
+    return c();
+  }
+}
+#endif
+
+---
+
+ (program
+      (preproc_ifndef
+        (identifier)
+        (preproc_def
+          (identifier))
+        (class_declaration
+          (identifier)
+          (class_body
+            (method_declaration
+              (type_identifier)
+              (identifier)
+              (formal_parameters)
+              (block
+                (return_statement
+                  (method_invocation
+                    (identifier)
+                    (argument_list)))))))))
+
+================================================================================
+Preproc 6
+================================================================================
+
+interface X : Y {
+	A B();
+	void c(int d);
+#if AA > 0
+	void BB(CC dd);
+#endif
+}
+
+---
+
+(program
+  (interface_declaration
+    (identifier)
+    (type_identifier)
+    (interface_body
+      (method_interface
+        (type_identifier)
+        (identifier)
+        (formal_parameters))
+      (method_interface
+        (void_type)
+        (identifier)
+        (formal_parameters
+          (formal_parameter
+            (integral_type)
+            (identifier))))
+      (preproc_if
+        (binary_expression
+          (identifier)
+          (decimal_integer_literal))
+        (method_signature_declaration
+          (void_type)
+          (identifier)
+          (formal_parameters
+            (formal_parameter
+              (type_identifier)
+              (identifier))))))))
+
+================================================================================
+Preproc 7
+================================================================================
+
+class A implements B {
+	ptr Aa bb, cc, dd, ee;
+#if XX > 0 || XC > 0 || defined(XCV)
+	ptr T c;
+#endif
+	ptr H n;
+}                  
+
+---
+
+(program
+  (class_declaration
+    (identifier)
+    (super_interfaces
+      (type_list
+        (type_identifier)))
+    (class_body
+      (field_declaration
+        (ptr_type)
+        (type_identifier)
+        (variable_declarator
+          (identifier))
+        (variable_declarator
+          (identifier))
+        (variable_declarator
+          (identifier))
+        (variable_declarator
+          (identifier)))
+      (preproc_if
+        (binary_expression
+          (binary_expression
+            (binary_expression
+              (identifier)
+              (decimal_integer_literal))
+            (binary_expression
+              (identifier)
+              (decimal_integer_literal)))
+          (preproc_defined
+            (identifier)))
+        (field_declaration
+          (ptr_type)
+          (type_identifier)
+          (variable_declarator
+            (identifier))))
+      (field_declaration
+        (ptr_type)
+        (type_identifier)
+        (variable_declarator
+          (identifier))))))
+
+================================================================================
+Preproc 8
+================================================================================
+
+#if defined(x) && D > 1
+#endif
+
+---
+
+(program
+  (preproc_if
+    (binary_expression
+      (preproc_defined
+        (identifier))
+      (binary_expression
+        (identifier)
+        (decimal_integer_literal)))))
+
+================================================================================
+Preproc 9
+================================================================================
+
+class X {
+  bool x(int a) {
+    return a == b
+  #if C > 1
+      || d == e
+  #endif
+      ; // comment
+  }
+}
+
+---
+
+(program
+      (class_declaration
+        (identifier)
+        (class_body
+          (method_declaration
+            (boolean_type)
+            (identifier)
+            (formal_parameters
+              (formal_parameter
+                (integral_type)
+                (identifier)))
+            (block
+              (return_statement
+                (binary_expression
+                  (identifier)
+                  (identifier))
+                (preproc_if
+                  (binary_expression
+                    (identifier)
+                    (decimal_integer_literal))
+                  (preproc_return
+                    (binary_expression
+                      (identifier)
+                      (identifier)))))
+              (line_comment))))))
+
+================================================================================
+Preproc 10
+================================================================================
+
+class X {
+  str a() {
+  #if A > 0
+    if (!b.c())
+      return "bc";
+    else
+      return "ee";
+  #elif DD > 0
+    return "as";
+  #elif E > 0
+    return "e";
+  #elif DDF > 0
+    return zz == cc.aa ? "w" :
+        dd == hh.ff ? "e" :
+        "D";
+  #else
+    return "1";
+  #endif
+  }
+}
+
+---
+
+(program
+      (class_declaration
+        (identifier)
+        (class_body
+          (method_declaration
+            (str_type)
+            (identifier)
+            (formal_parameters)
+            (block
+              (preproc_if
+                (binary_expression
+                  (identifier)
+                  (decimal_integer_literal))
+                (if_statement
+                  (parenthesized_expression
+                    (unary_expression
+                      (method_invocation
+                        (identifier)
+                        (identifier)
+                        (argument_list))))
+                  (return_statement
+                    (string_literal
+                      (string_fragment)))
+                  (return_statement
+                    (string_literal
+                      (string_fragment))))
+                (preproc_elif
+                  (binary_expression
+                    (identifier)
+                    (decimal_integer_literal))
+                  (return_statement
+                    (string_literal
+                      (string_fragment)))
+                  (preproc_elif
+                    (binary_expression
+                      (identifier)
+                      (decimal_integer_literal))
+                    (return_statement
+                      (string_literal
+                        (string_fragment)))
+                    (preproc_elif
+                      (binary_expression
+                        (identifier)
+                        (decimal_integer_literal))
+                      (return_statement
+                        (ternary_expression
+                          (binary_expression
+                            (identifier)
+                            (field_access
+                              (identifier)
+                              (identifier)))
+                          (string_literal
+                            (string_fragment))
+                          (ternary_expression
+                            (binary_expression
+                              (identifier)
+                              (field_access
+                                (identifier)
+                                (identifier)))
+                            (string_literal
+                              (string_fragment))
+                            (string_literal
+                              (string_fragment)))))
+                      (preproc_else
+                        (return_statement
+                          (string_literal
+                            (string_fragment)))))))))))))
+
+================================================================================
+Preproc 11
+================================================================================
+
+#if 1 > 2
+x();
+#endif;
+
+---
+
+(program
+  (preproc_if
+    (binary_expression
+      (decimal_integer_literal)
+      (decimal_integer_literal))
+    (expression_statement
+      (method_invocation
+        (identifier)
+        (argument_list)))))

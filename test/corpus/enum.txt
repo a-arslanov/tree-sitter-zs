@@ -1,0 +1,103 @@
+============================================
+Enum 1
+============================================
+
+enum a {
+	z = -1,
+	x,
+	c,
+	v
+}
+
+----
+
+(program
+  (enum_declaration
+    (identifier)
+    (enumerator_list
+      (enumerator
+        (identifier)
+        (unary_expression
+          (decimal_integer_literal)))
+      (enumerator
+        (identifier))
+      (enumerator
+        (identifier))
+      (enumerator
+        (identifier)))))
+
+============================================
+Enum 2
+============================================
+
+enum A {}
+
+---
+
+(program
+  (enum_declaration
+    (identifier)
+    (enumerator_list)))
+
+============================================
+Enum 3
+============================================
+
+enum A : str {
+	a = "DELAY_EPG_LOAD",
+#if X >= 1
+	b = "b",
+#endif
+	d = "d",
+}
+
+---
+
+(program
+  (enum_declaration
+    (identifier)
+    (str_type)
+    (enumerator_list
+      (enumerator
+        (identifier)
+        (string_literal
+          (string_fragment)))
+      (preproc_if
+        (binary_expression
+          (identifier)
+          (decimal_integer_literal))
+        (enumerator
+          (identifier)
+          (string_literal
+            (string_fragment))))
+      (enumerator
+        (identifier)
+        (string_literal
+          (string_fragment))))))
+
+============================================
+Enum 4
+============================================
+
+native enum X {
+	a = 0x1,
+	b = 0x2,
+	c = 0x4,
+}
+
+---
+
+(program
+  (enum_declaration
+    (modifiers)
+    (identifier)
+    (enumerator_list
+      (enumerator
+        (identifier)
+        (hex_integer_literal))
+      (enumerator
+        (identifier)
+        (hex_integer_literal))
+      (enumerator
+        (identifier)
+        (hex_integer_literal)))))

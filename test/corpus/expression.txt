@@ -1,0 +1,113 @@
+============================================
+Expression 1
+============================================
+
+101;
+3.14;
+3.14e+1;
+0x1ABCDEFabcdef;
+0o7632157312;
+0b1010101001;
+1e+3;
+
+---
+
+(program
+      (expression_statement
+        (decimal_integer_literal))
+      (expression_statement
+        (decimal_floating_point_literal))
+      (expression_statement
+        (decimal_floating_point_literal))
+      (expression_statement
+        (hex_integer_literal))
+      (expression_statement
+        (octal_integer_literal))
+      (expression_statement
+        (binary_integer_literal))
+      (expression_statement
+        (decimal_floating_point_literal)))
+
+============================================
+Expression 2
+============================================
+
+theVar;
+theVar2;
+$_;
+
+---
+
+(program
+      (expression_statement
+        (identifier))
+      (expression_statement
+        (identifier))
+      (expression_statement
+        (identifier)))
+
+============================================
+Expression 3
+============================================
+
+int a = b
+  , c = d
+  , e = f;
+
+---
+
+(program
+      (local_variable_declaration
+        (integral_type)
+        (variable_declarator
+          (identifier)
+          (identifier))
+        (variable_declarator
+          (identifier)
+          (identifier))
+        (variable_declarator
+          (identifier)
+          (identifier))))
+
+============================================
+Expression 4
+============================================
+
+this;
+null;
+undefined;
+true;
+false;
+
+---
+
+(program
+  (expression_statement
+    (this))
+  (expression_statement
+    (null_literal))
+  (expression_statement
+    (identifier))
+  (expression_statement
+    (true))
+  (expression_statement
+    (false)))
+
+============================================
+Expression 5
+============================================
+
+  foo
+    ? /* comment */bar
+    : baz;
+
+---
+
+(program
+  (expression_statement
+    (ternary_expression
+      (identifier)
+      (block_comment)
+      (identifier)
+      (identifier))))
+      

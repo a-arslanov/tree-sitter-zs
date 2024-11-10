@@ -1,0 +1,36 @@
+==============================
+Function 1
+==============================
+
+str a(this B self) {
+ ;
+ return (self.c(d.e, 0) as F)();
+}
+
+-------
+
+(program
+  (function_declaration
+    (str_type)
+    (identifier)
+    (formal_parameters
+      (receiver_parameter
+        (this))
+      (formal_parameter
+        (type_identifier)
+        (identifier)))
+    (block
+      (return_statement
+        (method_invocation
+          (parenthesized_expression
+            (cast_expression
+              (method_invocation
+                (identifier)
+                (identifier)
+                (argument_list
+                  (field_access
+                    (identifier)
+                    (identifier))
+                  (decimal_integer_literal)))
+              (type_identifier)))
+          (argument_list))))))

@@ -1,0 +1,653 @@
+============================================
+Statenent 1
+============================================
+
+bool x1 = true;
+byte x2 = 0x0;
+double x3 = 0.11;
+fix x5 = 1;
+float x6 = 0.11;
+int x7 = 1;
+int x8 = 0.1;
+str x9 = "string";
+
+---
+
+(program
+  (local_variable_declaration
+    (boolean_type)
+    (variable_declarator
+      (identifier)
+      (true)))
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)
+      (hex_integer_literal)))
+  (local_variable_declaration
+    (floating_point_type)
+    (variable_declarator
+      (identifier)
+      (decimal_floating_point_literal)))
+  (local_variable_declaration
+    (fix_type)
+    (variable_declarator
+      (identifier)
+      (decimal_integer_literal)))
+  (local_variable_declaration
+    (floating_point_type)
+    (variable_declarator
+      (identifier)
+      (decimal_floating_point_literal)))
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)
+      (decimal_integer_literal)))
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)
+      (decimal_floating_point_literal)))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_literal
+        (string_fragment)))))
+
+============================================
+Statenent 2
+============================================
+
+if (x)
+  l(y);
+
+if (a.b) {
+  l(c);
+  d;
+}
+
+if (n-->0){}
+
+----
+
+(program
+  (if_statement
+    (parenthesized_expression
+      (identifier))
+    (expression_statement
+      (method_invocation
+        (identifier)
+        (argument_list
+          (identifier)))))
+  (if_statement
+    (parenthesized_expression
+      (field_access
+        (identifier)
+        (identifier)))
+    (block
+      (expression_statement
+        (method_invocation
+          (identifier)
+          (argument_list
+            (identifier))))
+      (expression_statement
+        (identifier))))
+  (if_statement
+    (parenthesized_expression
+      (binary_expression
+        (update_expression
+          (identifier))
+        (decimal_integer_literal)))
+    (block)))
+
+============================================
+Statenent 3
+============================================
+
+if (x)
+  y;
+else if (a)
+  b;
+
+if (a) {
+  c;
+  d;
+} else {
+  e;
+}
+
+----
+
+(program
+  (if_statement
+    (parenthesized_expression
+      (identifier))
+    (expression_statement
+      (identifier))
+    (if_statement
+      (parenthesized_expression
+        (identifier))
+      (expression_statement
+        (identifier))))
+  (if_statement
+    (parenthesized_expression
+      (identifier))
+    (block
+      (expression_statement
+        (identifier))
+      (expression_statement
+        (identifier)))
+    (block
+      (expression_statement
+        (identifier)))))
+
+============================================
+Statenent 4
+============================================
+
+for (int i = 0; i < 10; i++)
+  log(y);
+
+for (;;) {
+  z;
+  continue;
+}
+
+---
+
+(program
+  (for_statement
+    (local_variable_declaration
+      (integral_type)
+      (variable_declarator
+        (identifier)
+        (decimal_integer_literal)))
+    (binary_expression
+      (identifier)
+      (decimal_integer_literal))
+    (update_expression
+      (identifier))
+    (expression_statement
+      (method_invocation
+        (identifier)
+        (argument_list
+          (identifier)))))
+  (for_statement
+    (block
+      (expression_statement
+        (identifier))
+      (continue_statement))))
+
+============================================
+Statenent 5
+============================================
+
+while (a)
+  b();
+
+while (a) {
+
+}
+
+---
+
+(program
+  (while_statement
+    (parenthesized_expression
+      (identifier))
+    (expression_statement
+      (method_invocation
+        (identifier)
+        (argument_list))))
+  (while_statement
+    (parenthesized_expression
+      (identifier))
+    (block)))
+
+============================================
+Statenent 6
+============================================
+
+
+do {} while (1);
+
+
+---
+
+(program
+  (do_statement
+    (block)
+    (parenthesized_expression
+      (decimal_integer_literal))))
+
+============================================
+Statenent 7
+============================================
+
+return;
+return 5;
+return 1.2;
+return a;
+
+---
+
+(program
+  (return_statement)
+  (return_statement
+    (decimal_integer_literal))
+  (return_statement
+    (decimal_floating_point_literal))
+  (return_statement
+    (identifier)))
+
+============================================
+Statenent 8
+============================================
+
+int x = 1;
+str x, y = "a", z;
+
+---
+
+(program
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)
+      (decimal_integer_literal)))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier))
+    (variable_declarator
+      (identifier)
+      (string_literal
+        (string_fragment)))
+    (variable_declarator
+      (identifier))))
+
+============================================
+Statenent 9
+============================================
+
+  // This is a property
+  /*
+   * This is a method
+   */
+
+---
+
+(program
+  (line_comment)
+  (block_comment))
+
+============================================
+Statenent 10
+============================================
+
+/* a */
+/* b **/
+/* c ***/
+/* d
+
+***/
+
+---
+
+(program
+  (block_comment)
+  (block_comment)
+  (block_comment)
+  (block_comment))
+
+==========================================
+Statenent 11
+==========================================
+
+y // comment
+  * z;
+
+---
+
+(program
+  (expression_statement
+    (binary_expression
+      (identifier)
+      (line_comment)
+      (identifier))))
+
+============================================
+Statenent 12
+============================================
+
+switch (x) {
+  case 1:
+  case 2:
+    something();
+    break;
+  case "three":
+    somethingElse();
+    break;
+  default:
+    return 4;
+}
+
+---
+
+(program
+  (switch_expression
+    (parenthesized_expression
+      (identifier))
+    (switch_block
+      (switch_block_statement_group
+        (switch_label
+          (decimal_integer_literal)))
+      (switch_block_statement_group
+        (switch_label
+          (decimal_integer_literal))
+        (expression_statement
+          (method_invocation
+            (identifier)
+            (argument_list)))
+        (break_statement))
+      (switch_block_statement_group
+        (switch_label
+          (string_literal
+            (string_fragment)))
+        (expression_statement
+          (method_invocation
+            (identifier)
+            (argument_list)))
+        (break_statement))
+      (switch_block_statement_group
+        (switch_label)
+        (return_statement
+          (decimal_integer_literal))))))
+
+============================================
+Statenent 13
+============================================
+
+if (true) { ; };;;
+if (true) {} else {}
+
+---
+
+(program
+  (if_statement
+    (parenthesized_expression
+      (true))
+    (block))
+  (if_statement
+    (parenthesized_expression
+      (true))
+    (block)
+    (block)))
+
+============================================
+Statenent 14
+============================================
+
+return z
+_
+3;
+
+return z
++
+3;
+
+---
+
+(program
+  (return_statement
+    (binary_expression
+      (identifier)
+      (decimal_integer_literal)))
+  (return_statement
+    (binary_expression
+      (identifier)
+      (decimal_integer_literal))))
+
+============================================
+Statenent 15
+============================================
+
+str x = "a\\"b"\\";
+
+---
+
+(program
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_literal
+        (string_fragment)
+        (escape_sequence)
+        (string_fragment)
+        (escape_sequence)))))
+
+============================================
+Statenent 16
+============================================
+
+z.b("a=b&c=" _ x("a.\nb", DDD));
+
+---
+
+(program
+  (expression_statement
+    (method_invocation
+      (identifier)
+      (identifier)
+      (argument_list
+        (binary_expression
+          (string_literal
+            (string_fragment))
+          (method_invocation
+            (identifier)
+            (argument_list
+              (string_literal
+                (string_fragment)
+                (escape_sequence)
+                (string_fragment))
+              (identifier))))))))
+
+============================================
+Statenent 17
+============================================
+
+str x = "=\"g\"et=" _ rh(0) _ "/>";
+
+---
+
+(program
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (binary_expression
+        (binary_expression
+          (string_literal
+            (string_fragment)
+            (escape_sequence)
+            (string_fragment)
+            (escape_sequence)
+            (string_fragment))
+          (method_invocation
+            (identifier)
+            (argument_list
+              (decimal_integer_literal))))
+        (string_literal
+          (string_fragment))))))
+
+============================================
+Statenent 18
+============================================
+
+a.&void(B ref) {
+	this.c(d, (this.w - ref.w) / 2, (this.h - ref.h) / 2, 0, 0, ref.w, ref.h);
+};
+
+---
+
+(program
+  (expression_statement
+    (lambda_invocation
+      (identifier)
+      (lambda_expression
+        (void_type)
+        (formal_parameters
+          (formal_parameter
+            (type_identifier)
+            (identifier)))
+        (block
+          (expression_statement
+            (method_invocation
+              (this)
+              (identifier)
+              (argument_list
+                (identifier)
+                (binary_expression
+                  (argument_list
+                    (binary_expression
+                      (field_access
+                        (this)
+                        (identifier))
+                      (field_access
+                        (identifier)
+                        (identifier))))
+                  (decimal_integer_literal))
+                (binary_expression
+                  (argument_list
+                    (binary_expression
+                      (field_access
+                        (this)
+                        (identifier))
+                      (field_access
+                        (identifier)
+                        (identifier))))
+                  (decimal_integer_literal))
+                (decimal_integer_literal)
+                (decimal_integer_literal)
+                (field_access
+                  (identifier)
+                  (identifier))
+                (field_access
+                  (identifier)
+                  (identifier))))))))))
+
+============================================
+Statenent 19
+============================================
+
+interface X {
+	a = bool;
+}
+
+---
+
+(program
+  (interface_declaration
+    (identifier)
+    (interface_body
+      (set_declaration
+        (identifier)
+        (boolean_type)))))
+
+============================================
+Statenent 20
+============================================
+
+A.b("\\\"", c, "d");
+
+str x = "a\\"b"\\";
+str x = "\\";
+str x = "\"";
+str x = "\\";
+str x = "/";
+str x = "\\\"";
+
+---
+
+(program
+  (expression_statement
+    (method_invocation
+      (identifier)
+      (identifier)
+      (argument_list
+        (string_literal
+          (dqote_escape))
+        (identifier)
+        (string_literal
+          (string_fragment)))))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_literal
+        (string_fragment)
+        (escape_sequence)
+        (string_fragment)
+        (escape_sequence))))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_literal
+        (escape_sequence))))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_literal
+        (escape_sequence))))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_literal
+        (escape_sequence))))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_literal
+        (string_fragment))))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_literal
+        (dqote_escape)))))
+
+====================================
+Statenent 21
+====================================
+
+str x = "a:\\b=""c.json""&d=""r\\""&a=""b";
+
+------
+
+(program
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_literal
+        (string_fragment)
+        (escape_sequence)
+        (escape_sequence)
+        (string_fragment)
+        (dqote_escape)
+        (string_fragment)
+        (dqote_escape)
+        (string_fragment)
+        (dqote_escape)
+        (string_fragment)
+        (dqote_escape)
+        (string_fragment)
+        (dqote_escape)
+        (string_fragment)))))

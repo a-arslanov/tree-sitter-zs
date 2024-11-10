@@ -1,0 +1,662 @@
+============================================
+Type 1
+============================================
+
+long x = 1000L;
+long x = 1000l;
+float x = 1000.0f;
+
+---
+
+(program
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)
+      (decimal_integer_literal)))
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)
+      (decimal_integer_literal)))
+  (local_variable_declaration
+    (floating_point_type)
+    (variable_declarator
+      (identifier)
+      (decimal_floating_point_literal))))
+
+============================================
+Type 2
+============================================
+
+A b = y as C;
+
+---
+
+(program
+  (local_variable_declaration
+    (type_identifier)
+    (variable_declarator
+      (identifier)
+      (cast_expression
+        (identifier)
+        (type_identifier)))))
+
+============================================
+Type 3
+============================================
+
+A b;
+type C = event D(DD  a);
+CV d;
+
+---
+
+(program
+  (local_variable_declaration
+    (type_identifier)
+    (variable_declarator
+      (identifier)))
+  (local_type_declaration
+    (typed_variable_declarator_list
+      (typed_variable_declarator
+        (identifier)
+        (type_identifier)
+        (formal_parameters
+          (formal_parameter
+            (type_identifier)
+            (identifier))))))
+  (local_variable_declaration
+    (type_identifier)
+    (variable_declarator
+      (identifier))))
+
+============================================
+Type 4
+============================================
+
+class X {
+  A B() {
+    return c();
+  }
+}
+
+---
+
+(program
+  (class_declaration
+    (identifier)
+    (class_body
+      (method_declaration
+        (type_identifier)
+        (identifier)
+        (formal_parameters)
+        (block
+          (return_statement
+            (method_invocation
+              (identifier)
+              (argument_list))))))))
+
+============================================
+Type 5
+============================================
+
+  int(a);
+  str(a);
+
+---
+
+(program
+  (expression_statement
+    (method_invocation
+      (identifier)
+      (argument_list
+        (identifier))))
+  (expression_statement
+    (method_invocation
+      (identifier)
+      (argument_list
+        (identifier)))))
+
+============================================
+Type 6
+============================================
+
+void x;
+ptr X x;
+
+bool x;
+str x;
+fix x;
+
+byte x;
+int x;
+long x;
+
+float x;
+double x;
+
+---
+
+(program
+  (local_variable_declaration
+    (void_type)
+    (variable_declarator
+      (identifier)))
+  (local_variable_declaration
+    (ptr_type)
+    (type_identifier)
+    (variable_declarator
+      (identifier)))
+  (local_variable_declaration
+    (boolean_type)
+    (variable_declarator
+      (identifier)))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)))
+  (local_variable_declaration
+    (fix_type)
+    (variable_declarator
+      (identifier)))
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)))
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)))
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)))
+  (local_variable_declaration
+    (floating_point_type)
+    (variable_declarator
+      (identifier)))
+  (local_variable_declaration
+    (floating_point_type)
+    (variable_declarator
+      (identifier))))
+
+============================================
+Type 7
+============================================
+
+class X {
+  bool a(this B c) {
+    return d == e;
+  }
+}
+
+---
+
+(program
+  (class_declaration
+    (identifier)
+    (class_body
+      (method_declaration
+        (boolean_type)
+        (identifier)
+        (formal_parameters
+          (receiver_parameter
+            (this))
+          (formal_parameter
+            (type_identifier)
+            (identifier)))
+        (block
+          (return_statement
+            (binary_expression
+              (identifier)
+              (identifier))))))))
+
+============================================
+Type 8
+============================================
+
+interface A : B {
+#if C > 0
+	bool d; d = bool;
+#endif
+  int aa;
+	bool bb; bb = bool;
+}
+
+---
+
+(program
+  (interface_declaration
+    (identifier)
+    (type_identifier)
+    (interface_body
+      (preproc_if
+        (binary_expression
+          (identifier)
+          (decimal_integer_literal))
+        (get_declaration
+          (boolean_type)
+          (identifier))
+        (set_declaration
+          (identifier)
+          (boolean_type)))
+      (get_declaration
+        (integral_type)
+        (identifier))
+      (get_declaration
+        (boolean_type)
+        (identifier))
+      (set_declaration
+        (identifier)
+        (boolean_type)))))
+
+============================================
+Type 9
+============================================
+
+const int X = 250;
+
+---
+
+(program
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)
+      (decimal_integer_literal))))
+
+============================================
+Type 10
+============================================
+
+a = b as c.d(aa.bb, cc);
+
+---
+
+(program
+  (expression_statement
+    (assignment_expression
+      (identifier)
+      (method_invocation
+        (cast_expression
+          (identifier)
+          (type_identifier))
+        (identifier)
+        (argument_list
+          (field_access
+            (identifier)
+            (identifier))
+          (identifier))))))
+
+============================================
+Type 11
+============================================
+
+void(A self) b = &void(C d) {
+				if (aa.b != null && cc.dd != null) {
+					aa.ss = 255;
+					cc.ss = 255;
+				}
+			};
+            
+---
+
+(program
+  (local_variable_declaration
+    (void_type)
+    (argument_list
+      (typed_expression
+        (type_identifier)
+        (identifier)))
+    (variable_declarator
+      (identifier)
+      (lambda_expression
+        (void_type)
+        (formal_parameters
+          (formal_parameter
+            (type_identifier)
+            (identifier)))
+        (block
+          (if_statement
+            (parenthesized_expression
+              (binary_expression
+                (binary_expression
+                  (field_access
+                    (identifier)
+                    (identifier))
+                  (null_literal))
+                (binary_expression
+                  (field_access
+                    (identifier)
+                    (identifier))
+                  (null_literal))))
+            (block
+              (expression_statement
+                (assignment_expression
+                  (field_access
+                    (identifier)
+                    (identifier))
+                  (decimal_integer_literal)))
+              (expression_statement
+                (assignment_expression
+                  (field_access
+                    (identifier)
+                    (identifier))
+                  (decimal_integer_literal))))))))))
+
+============================================
+Type 12
+============================================
+
+void a(B bb, C cc, void(int d) x, void(int aaa, int bbb) ccc);
+
+---
+
+(program
+  (method_signature_declaration
+    (void_type)
+    (identifier)
+    (formal_parameters
+      (formal_parameter
+        (type_identifier)
+        (identifier))
+      (formal_parameter
+        (type_identifier)
+        (identifier))
+      (formal_parameter
+        (amazin_void_type
+          (void_type)
+          (formal_parameter
+            (integral_type)
+            (identifier)))
+        (identifier))
+      (formal_parameter
+        (amazin_void_type
+          (void_type)
+          (formal_parameter
+            (integral_type)
+            (identifier))
+          (formal_parameter
+            (integral_type)
+            (identifier)))
+        (identifier)))))
+
+============================================
+Type 13
+============================================
+
+class X {
+	void(int a) b;
+}
+
+---
+
+(program
+  (class_declaration
+    (identifier)
+    (class_body
+      (field_declaration
+        (amazin_void_type
+          (void_type)
+          (formal_parameter
+            (integral_type)
+            (identifier)))
+        (variable_declarator
+          (identifier))))))
+
+============================================
+Type 14
+============================================
+
+str(A a) b = &c;
+
+---
+
+(program
+  (local_variable_declaration
+    (identifier)
+    (argument_list
+      (typed_expression
+        (type_identifier)
+        (identifier)))
+    (variable_declarator
+      (identifier)
+      (pointer_identifier
+        (identifier)))))
+
+============================================
+Type 15
+============================================
+
+native interface X;
+
+---
+
+(program
+  (interface_declaration
+    (modifiers)
+    (identifier)))
+
+============================================
+Type 16
+============================================
+
+const int a = 0x6;
+
+---
+
+(program
+  (local_variable_declaration
+    (integral_type)
+    (variable_declarator
+      (identifier)
+      (hex_integer_literal))))
+
+============================================
+Type 17
+============================================
+
+native interface X<C P> {}
+
+---
+
+(program
+  (interface_declaration
+    (modifiers)
+    (identifier)
+    (type_parameters
+      (type_parameter
+        (type_identifier)
+        (identifier)))
+    (interface_body)))
+
+============================================
+Type 18
+============================================
+
+native interface X {
+    bool x[int d];
+    x[int d] = bool;
+}
+
+---
+
+(program
+  (interface_declaration
+    (modifiers)
+    (identifier)
+    (interface_body
+      (get_declaration
+        (boolean_type)
+        (identifier)
+        (typed_array
+          (integral_type)
+          (identifier)))
+      (set_declaration
+        (identifier)
+        (typed_array
+          (integral_type)
+          (identifier))
+        (boolean_type)))))
+
+============================================
+Type 19
+============================================
+
+native interface A<B P> {
+	P _[int];
+  _[int] = P;
+
+  P _[int];
+	P _[int] = P;
+}
+
+---
+
+(program
+  (interface_declaration
+    (modifiers)
+    (identifier)
+    (type_parameters
+      (type_parameter
+        (type_identifier)
+        (identifier)))
+    (interface_body
+      (get_declaration
+        (type_identifier)
+        (identifier)
+        (typed_array
+          (integral_type)))
+      (set_declaration
+        (identifier)
+        (typed_array
+          (integral_type))
+        (identifier))
+      (get_declaration
+        (type_identifier)
+        (identifier)
+        (typed_array
+          (integral_type)))
+      (set_declaration
+        (type_identifier)
+        (identifier)
+        (typed_array
+          (integral_type))
+        (identifier)))))
+
+============================================
+Type 20
+============================================
+
+interface X {
+  byte a[int b];
+  m(byte c, int d);
+}
+
+---
+
+(program
+  (interface_declaration
+    (identifier)
+    (interface_body
+      (get_declaration
+        (integral_type)
+        (identifier)
+        (typed_array
+          (integral_type)
+          (identifier)))
+      (method_interface
+        (identifier)
+        (formal_parameters
+          (formal_parameter
+            (integral_type)
+            (identifier))
+          (formal_parameter
+            (integral_type)
+            (identifier)))))))
+
+============================================
+Type 21
+============================================
+
+interface X {
+  void a(str);
+}
+
+---
+
+(program
+  (interface_declaration
+    (identifier)
+    (interface_body
+      (method_interface
+        (void_type)
+        (identifier)
+        (formal_parameters
+          (formal_parameter
+            (str_type)))))))
+
+============================================
+Type 22
+============================================
+
+interface X {
+  int a[int b, int c];
+}
+
+---
+
+(program
+  (interface_declaration
+    (identifier)
+    (interface_body
+      (get_declaration
+        (integral_type)
+        (identifier)
+        (typed_array
+          (integral_type)
+          (identifier)
+          (integral_type)
+          (identifier))))))
+
+============================================
+Type 23
+============================================
+
+interface X {
+  a = bool();
+}
+
+---
+
+(program
+  (interface_declaration
+    (identifier)
+    (interface_body
+      (set_declaration
+        (identifier)
+        (method_invocation
+          (identifier)
+          (argument_list))))))
+
+============================================
+Type 24
+============================================
+
+native class A : B
+{
+	C[] _;
+}
+
+---
+
+(program
+  (class_declaration
+    (modifiers)
+    (identifier)
+    (type_identifier)
+    (class_body
+      (array_of
+        (type_identifier)
+        (identifier)))))

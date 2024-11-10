@@ -1,0 +1,223 @@
+============================================
+Array 1
+============================================
+
+X y = Z{_:[
+  rx(0), ry(92), rw(1280), rh(158), rx(590), ry(14),
+  rx(0), ry(420), rw(1280), rh(300), rx(590), ry(80),
+  ry(58),
+  ry(92),
+]};
+---
+
+(program
+  (local_variable_declaration
+    (type_identifier)
+    (variable_declarator
+      (identifier)
+      (new_expression
+        (identifier)
+        (pair
+          (identifier)
+          (array
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))))))))
+
+============================================
+Array 2
+============================================
+
+str name = x._[i];
+
+---
+
+(program
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (array_access
+        (identifier)
+        (identifier)))))
+
+============================================
+Array 3
+============================================
+
+str name = suggestions[:i];
+str name = suggestions[:0];
+str name = suggestions[i:0];
+str name = suggestions[i:];
+str x = a.b(c.d(options, "direction", "down")[0:1]);
+
+---
+
+(program
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_splice_expression
+        (identifier)
+        (identifier))))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_splice_expression
+        (identifier)
+        (decimal_integer_literal))))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_splice_expression
+        (identifier)
+        (identifier)
+        (decimal_integer_literal))))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (string_splice_expression
+        (identifier)
+        (identifier))))
+  (local_variable_declaration
+    (str_type)
+    (variable_declarator
+      (identifier)
+      (method_invocation
+        (identifier)
+        (identifier)
+        (argument_list
+          (string_splice_expression
+            (method_invocation
+              (identifier)
+              (identifier)
+              (argument_list
+                (identifier)
+                (string_literal
+                  (string_fragment))
+                (string_literal
+                  (string_fragment))))
+            (decimal_integer_literal)
+            (decimal_integer_literal)))))))
+
+============================================
+Array 4
+============================================
+
+a.y = y;
+b.child[0];
+c.child[3].d(w + rw(1) * 2, h + rw(1) * 2);
+
+---
+
+(program
+  (expression_statement
+    (assignment_expression
+      (field_access
+        (identifier)
+        (identifier))
+      (identifier)))
+  (expression_statement
+    (array_access
+      (field_access
+        (identifier)
+        (identifier))
+      (decimal_integer_literal)))
+  (expression_statement
+    (method_invocation
+      (array_access
+        (field_access
+          (identifier)
+          (identifier))
+        (decimal_integer_literal))
+      (identifier)
+      (argument_list
+        (binary_expression
+          (identifier)
+          (binary_expression
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (decimal_integer_literal)))
+        (binary_expression
+          (identifier)
+          (binary_expression
+            (method_invocation
+              (identifier)
+              (argument_list
+                (decimal_integer_literal)))
+            (decimal_integer_literal)))))))
+
+============================================
+Array 5
+============================================
+
+a._[j] = "";
+
+---
+
+(program
+  (expression_statement
+    (assignment_expression
+      (array_access
+        (identifier)
+        (identifier))
+      (string_literal))))

@@ -1,0 +1,107 @@
+{
+  "name": "tree-sitter-zs",
+  "version": "0.1.0",
+  "description": "ZS grammar for tree-sitter",
+  "repository": {
+    "type": "git",
+    "url": "FIXME"
+  },
+  "license": "MIT",
+  "author": "Artur Arslanov",
+  "main": "bindings/node",
+  "types": "bindings/node",
+  "keywords": [
+    "incremental",
+    "parsing",
+    "tree-sitter",
+    "zs"
+  ],
+  "files": [
+    "grammar.js",
+    "binding.gyp",
+    "prebuilds/**",
+    "bindings/node/*",
+    "queries/*",
+    "src/*"
+  ],
+  "dependencies": {
+    "node-addon-api": "^8.1.0",
+    "node-gyp-build": "^4.8.2"
+  },
+  "peerDependencies": {
+    "tree-sitter": "^0.22.0"
+  },
+  "peerDependenciesMeta": {
+    "tree-sitter": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-google": "^0.14.0",
+    "prebuildify": "^6.0.1",
+    "tree-sitter-cli": "^0.23.0"
+  },
+  "scripts": {
+    "install": "node-gyp-build",
+    "lint": "eslint grammar.js",
+    "start": "tree-sitter playground",
+    "test": "node --test bindings/node/*_test.js && tree-sitter test",
+    "generate": "tree-sitter generate",
+    "build": "cp package.json package.json.back && npm run generate && tree-sitter build &&  mv package.json.back package.json"
+  },
+  "tree-sitter": [
+    {
+      "scope": "source.zs",
+      "file-types": [
+        "zs",
+        "zi"
+      ],
+      "highlights": "queries/highlights.scm",
+      "tags": "queries/tags.scm",
+      "injection-regex": "^(zs|zi)$"
+    }
+  ],
+  "eslintConfig": {
+    "env": {
+      "commonjs": true,
+      "es2021": true
+    },
+    "extends": "google",
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "rules": {
+      "arrow-parens": "off",
+      "camel-case": "off",
+      "indent": [
+        "error",
+        2,
+        {
+          "SwitchCase": 1
+        }
+      ],
+      "max-len": [
+        "error",
+        {
+          "code": 160,
+          "ignoreComments": true,
+          "ignoreUrls": true,
+          "ignoreStrings": true
+        }
+      ],
+      "spaced-comment": [
+        "warn",
+        "always",
+        {
+          "line": {
+            "markers": [
+              "/"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

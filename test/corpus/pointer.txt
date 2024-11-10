@@ -1,0 +1,185 @@
+============================================
+Pointer 1
+============================================
+
+ptr DDD x = y;
+
+---
+
+(program
+      (local_variable_declaration
+        (ptr_type)
+        (type_identifier)
+        (variable_declarator
+          (identifier)
+          (identifier))))
+        
+============================================
+Pointer 2
+============================================
+
+A{}.b().c();
+ptr A b = c{}.d();
+
+-----
+
+(program
+      (expression_statement
+        (new_expression
+          (identifier)
+          (method_invocation
+            (method_invocation
+              (identifier)
+              (argument_list))
+            (identifier)
+            (argument_list))))
+      (local_variable_declaration
+        (ptr_type)
+        (type_identifier)
+        (variable_declarator
+          (identifier)
+          (new_expression
+            (identifier)
+            (method_invocation
+              (identifier)
+              (argument_list))))))
+
+============================================
+Pointer 3
+============================================
+
+a.b = &void() {
+			c = 0;
+			d("d");
+			e.f(z.x);
+		};
+
+
+---
+
+(program
+      (expression_statement
+        (assignment_expression
+          (field_access
+            (identifier)
+            (identifier))
+          (lambda_expression
+            (void_type)
+            (formal_parameters)
+            (block
+              (expression_statement
+                (assignment_expression
+                  (identifier)
+                  (decimal_integer_literal)))
+              (expression_statement
+                (method_invocation
+                  (identifier)
+                  (argument_list
+                    (string_literal
+                      (string_fragment)))))
+              (expression_statement
+                (method_invocation
+                  (identifier)
+                  (identifier)
+                  (argument_list
+                    (field_access
+                      (identifier)
+                      (identifier))))))))))
+
+
+============================================
+Pointer 4
+============================================
+
+X{}.a(&b);
+
+---
+
+(program
+      (expression_statement
+        (new_expression
+          (identifier)
+          (method_invocation
+            (identifier)
+            (argument_list
+              (pointer_identifier
+                (identifier)))))))
+
+============================================
+Pointer 5
+============================================
+
+a.b(
+  c,
+  d.dd,
+  e(),
+  f.ff,
+  z.&x() {
+      this.aa = bb.cc;
+      return null;
+  }
+);
+
+---
+
+(program
+      (expression_statement
+        (method_invocation
+          (identifier)
+          (identifier)
+          (argument_list
+            (identifier)
+            (field_access
+              (identifier)
+              (identifier))
+            (method_invocation
+              (identifier)
+              (argument_list))
+            (field_access
+              (identifier)
+              (identifier))
+            (lambda_invocation
+              (identifier)
+              (lambda_expression
+                (type_identifier)
+                (formal_parameters)
+                (block
+                  (expression_statement
+                    (assignment_expression
+                      (field_access
+                        (this)
+                        (identifier))
+                      (field_access
+                        (identifier)
+                        (identifier))))
+                  (return_statement
+                    (null_literal)))))))))
+
+======================================
+amazing void 3
+======================================
+
+class X {
+  public void(int a, int b) aa() { return bb; }
+}
+-----------
+
+(program
+      (class_declaration
+        (identifier)
+        (class_body
+          (method_declaration
+            (modifiers)
+            (amazin_void_type
+              (void_type)
+              (formal_parameter
+                (integral_type)
+                (identifier))
+              (formal_parameter
+                (integral_type)
+                (identifier)))
+            (identifier)
+            (formal_parameters)
+            (block
+              (return_statement
+                (identifier)))))))
