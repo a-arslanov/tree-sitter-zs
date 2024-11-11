@@ -35,3 +35,31 @@ jobs:
           path: prebuilds/**
           name: prebuilds-${{runner.os}}
           retention-days: 2
+  package:
+    name: Publish NodeJS package
+    needs: [build_node]
+    runs-on: ubuntu-latest
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/${{github.event.repository.name}}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up NodeJS
+        uses: actions/setup-node@v4
+        with:
+          cache: npm
+          node-version: 22
+          registry-url: https://registry.npmjs.org/
+      - name: Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: prebuilds
+          pattern: prebuilds-*
+          merge-multiple: true
+      - name: Check binaries
+        run: tree prebuilds
+      - name: Publish to npm
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NODE_AUTH_TOKEN}}
