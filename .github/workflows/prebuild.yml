@@ -37,7 +37,7 @@ jobs:
           retention-days: 2
   package:
     name: Publish NodeJS package
-    needs: [build_node]
+    needs: [build]
     runs-on: ubuntu-latest
     environment:
       name: npm
