@@ -8,24 +8,30 @@ on:
 
 jobs:
   build:
+    name: Build NodeJS binaries on ${{matrix.os}}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest]
         node-version: [22]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up NodeJS
+        uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          cache: npm
+          node-version: ${{inputs.node-version}}
       - name: Install dependencies
-        run: npm ci
-      - name: Build prebuilt binaries
-        run: npm run build
-      - name: Upload prebuilt binaries
-        uses: actions/upload-artifact@v3
+        run: npm ci --omit peer --omit optional
+      - name: Build x64 binary
+        run: npm x -- prebuildify --strip --arch x64 --target 20.9.0
+      - name: Build arm64 binary
+        run: npm x -- prebuildify --strip --arch arm64 --target 20.9.0
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
         with:
-          name: prebuilds-${{ matrix.os }}
-          path: ./prebuilds
+          path: prebuilds/**
+          name: prebuilds-${{runner.os}}
+          retention-days: 2
