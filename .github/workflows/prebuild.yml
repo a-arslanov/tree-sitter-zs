@@ -1,0 +1,31 @@
+name: Build prebuilt binaries
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [22]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Build prebuilt binaries
+        run: npm run build
+      - name: Upload prebuilt binaries
+        uses: actions/upload-artifact@v2
+        with:
+          name: prebuilds-${{ matrix.os }}
+          path: ./prebuilds
